@@ -3,8 +3,9 @@ package main
 import (
 	"bufio"
 	"fmt"
-	"log"
+	"math"
 	"os"
+	"sort"
 	"strconv"
 	"strings"
 )
@@ -17,62 +18,42 @@ func main() {
 	defer file.Close()
 
 	scanner := bufio.NewScanner(file)
-	numbers := userInputToArray(*scanner)
-	println(numbers)
+	firstArrayNumbers, secondArrayNumbers := userInputToArray(*scanner)
+
 	if err := scanner.Err(); err != nil {
 		fmt.Println(err)
 	}
 
-	// fmt.Println("enter in numbers in array one")
-	// firstArray := bufio.NewScanner(os.Stdin)
-	// firstArrayNumbers := userInputToArray(*firstArray)
-
-	// fmt.Println("enter in numbers in array two")
-	// secondArray := bufio.NewScanner(os.Stdin)
-	// secondArrayNumbers := userInputToArray(*secondArray)
-	// var diffs []int
-	// leng := len(firstArrayNumbers)
-
-	// for i := 0; i < leng; i++ {
-	// 	x := findIndexOfSmallestValue(firstArrayNumbers)
-	// 	firstArrayNumbers[x] = math.MaxInt32
-	// 	y := findIndexOfSmallestValue(secondArrayNumbers)
-	// 	secondArrayNumbers[y] = math.MaxInt32
-	// 	diffs = append(diffs, int(math.Abs(float64(x-y))))
-	// }
-
-	// fmt.Println(diffs)
-}
-
-func findIndexOfSmallestValue(firstArrayNumbers []int) int {
-	smallest := firstArrayNumbers[0]
-	index := 0
-	for i, num := range firstArrayNumbers {
-		if num < smallest {
-			smallest = num
-			index = i
-		}
+	if len(firstArrayNumbers) != len(secondArrayNumbers) {
+		return
 	}
-	return index
+	sort.Ints(firstArrayNumbers)
+	sort.Ints(secondArrayNumbers)
+	diffs := 0
+
+	for i := range firstArrayNumbers {
+		diffs += int(math.Abs(float64(firstArrayNumbers[i] - secondArrayNumbers[i])))
+	}
+
+	fmt.Println(diffs)
 }
 
-func userInputToArray(scan bufio.Scanner) []int {
+func userInputToArray(scan bufio.Scanner) ([]int, []int) {
 
-	var nums []int
+	var array1 []int
+	var array2 []int
 	for scan.Scan() {
-		if scan.Text() == "" {
-			break
+		line := scan.Text()
+
+		parts := strings.Fields(line)
+		num1, err := strconv.Atoi(parts[0])
+		if err == nil {
+			array1 = append(array1, num1)
 		}
-		numsAsStr := strings.Split(scan.Text(), "   ")
-		for _, num := range numsAsStr {
-			i, err := strconv.Atoi(num)
-
-			if err != nil {
-				log.Fatal(err)
-			}
-
-			nums = append(nums, i)
+		num2, err := strconv.Atoi(parts[1])
+		if err == nil {
+			array2 = append(array2, num2)
 		}
 	}
-	return nums
+	return array1, array2
 }
