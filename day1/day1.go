@@ -18,7 +18,7 @@ func main() {
 	defer file.Close()
 
 	scanner := bufio.NewScanner(file)
-	firstArrayNumbers, secondArrayNumbers := userInputToArray(*scanner)
+	firstArrayNumbers, secondArrayNumbers, err := userInputToArray(*scanner)
 
 	if err := scanner.Err(); err != nil {
 		fmt.Println(err)
@@ -38,7 +38,7 @@ func main() {
 	fmt.Println(diffs)
 }
 
-func userInputToArray(scan bufio.Scanner) ([]int, []int) {
+func userInputToArray(scan bufio.Scanner) ([]int, []int, error) {
 
 	var array1 []int
 	var array2 []int
@@ -55,5 +55,5 @@ func userInputToArray(scan bufio.Scanner) ([]int, []int) {
 			array2 = append(array2, num2)
 		}
 	}
-	return array1, array2
+	return array1, array2, nil
 }
