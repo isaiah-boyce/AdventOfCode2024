@@ -16,7 +16,7 @@ func main() {
 	defer file.Close()
 
 	scanner := bufio.NewScanner(file)
-	firstArrayNumbers, secondArrayNumbers, err := userInputToArray(*scanner)
+	firstArrayNumbers, secondArrayNumbers, err := userInputsToMaps(*scanner)
 
 	if err := scanner.Err(); err != nil {
 		fmt.Println(err)
@@ -36,22 +36,22 @@ func main() {
 	fmt.Println(score)
 }
 
-func userInputToArray(scan bufio.Scanner) (map[int]int, map[int]int, error) {
+func userInputsToMaps(scan bufio.Scanner) (map[int]int, map[int]int, error) {
 
-	array1 := make(map[int]int)
-	array2 := make(map[int]int)
+	map1 := make(map[int]int)
+	map2 := make(map[int]int)
 	for scan.Scan() {
 		line := scan.Text()
 
 		parts := strings.Fields(line)
 		num1, err := strconv.Atoi(parts[0])
 		if err == nil {
-			array1[num1] = array1[num1] + 1
+			map1[num1] = map1[num1] + 1
 		}
 		num2, err := strconv.Atoi(parts[1])
 		if err == nil {
-			array2[num2] = array2[num2] + 1
+			map2[num2] = map2[num2] + 1
 		}
 	}
-	return array1, array2, nil
+	return map1, map2, nil
 }
