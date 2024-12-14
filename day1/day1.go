@@ -3,9 +3,7 @@ package main
 import (
 	"bufio"
 	"fmt"
-	"math"
 	"os"
-	"sort"
 	"strconv"
 	"strings"
 )
@@ -24,35 +22,35 @@ func main() {
 		fmt.Println(err)
 	}
 
-	if len(firstArrayNumbers) != len(secondArrayNumbers) {
-		return
-	}
-	sort.Ints(firstArrayNumbers)
-	sort.Ints(secondArrayNumbers)
-	diffs := 0
+	score := 0
 
-	for i := range firstArrayNumbers {
-		diffs += int(math.Abs(float64(firstArrayNumbers[i] - secondArrayNumbers[i])))
+	for k, v := range firstArrayNumbers {
+		// we need to take the number from the first array,
+		// look at the second array and find how many times that number occurs in the second array
+		// then multiply the number from the first by the occurances in the second array.
+		// then add that to diffs.
+		score += k * secondArrayNumbers[k] * v
+		//score += int(math.Abs(float64(firstArrayNumbers[i] - secondArrayNumbers[i])))
 	}
 
-	fmt.Println(diffs)
+	fmt.Println(score)
 }
 
-func userInputToArray(scan bufio.Scanner) ([]int, []int, error) {
+func userInputToArray(scan bufio.Scanner) (map[int]int, map[int]int, error) {
 
-	var array1 []int
-	var array2 []int
+	array1 := make(map[int]int)
+	array2 := make(map[int]int)
 	for scan.Scan() {
 		line := scan.Text()
 
 		parts := strings.Fields(line)
 		num1, err := strconv.Atoi(parts[0])
 		if err == nil {
-			array1 = append(array1, num1)
+			array1[num1] = array1[num1] + 1
 		}
 		num2, err := strconv.Atoi(parts[1])
 		if err == nil {
-			array2 = append(array2, num2)
+			array2[num2] = array2[num2] + 1
 		}
 	}
 	return array1, array2, nil
