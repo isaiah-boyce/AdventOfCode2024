@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"errors"
 	"fmt"
 	"os"
 	"strconv"
@@ -12,28 +13,36 @@ func main() {
 	file, err := os.Open("input.txt")
 	if err != nil {
 		fmt.Println(err)
+		return
 	}
 	defer file.Close()
 
 	scanner := bufio.NewScanner(file)
-	firstArrayNumbers, secondArrayNumbers, err := userInputsToMaps(*scanner)
+	nums1, nums2, err := userInputsToMaps(*scanner)
 
 	if err := scanner.Err(); err != nil {
 		fmt.Println(err)
+		return
 	}
 
-	score := 0
-
-	for k, v := range firstArrayNumbers {
-		// we need to take the number from the first array,
-		// look at the second array and find how many times that number occurs in the second array
-		// then multiply the number from the first by the occurances in the second array.
-		// then add that to diffs.
-		score += k * secondArrayNumbers[k] * v
-		//score += int(math.Abs(float64(firstArrayNumbers[i] - secondArrayNumbers[i])))
+	score, err := getSimilarityScore(nums1, nums2)
+	if err != nil {
+		fmt.Println(err)
+		return
 	}
 
 	fmt.Println(score)
+}
+
+func getSimilarityScore(nums1 map[int]int, nums2 map[int]int) (int, error) {
+	score := 0
+	if nums1 == nil {
+		return 0, errors.New("no numbers provided")
+	}
+	for k, v := range nums1 {
+		score += k * nums2[k] * v
+	}
+	return score, nil
 }
 
 func userInputsToMaps(scan bufio.Scanner) (map[int]int, map[int]int, error) {
